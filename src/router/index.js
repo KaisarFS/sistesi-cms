@@ -7,6 +7,7 @@ import Features from '../views/Features.vue'
 import LatestUpdate from '../views/Latest-update.vue'
 import Supports from '../views/Supports.vue'
 
+
 Vue.use(VueRouter)
 
 const routes = [
