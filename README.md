@@ -1,4 +1,4 @@
-# sistesi-cms-config: kai
+# sistesi-cms-configuration
 
 ## Project setup
 ```
