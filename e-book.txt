@@ -1,0 +1,700 @@
+<template>
+  <v-app class="grey lighten-5">
+    <v-content class="pa-8">
+      <h1>E-Book</h1>
+      <br />
+      <v-container>
+        <v-data-table
+          v-model="selected"
+          :headers="headers"
+          :items="articles"
+          :search="search"
+          class="elevation-1"
+          item-key="name"
+          disable-sort
+          show-select
+        >
+          <template v-slot:top>
+            <v-toolbar flat>
+              <!-- Add E-Book -->
+              <v-dialog v-model="dialog" max-width="40%">
+                <!-- Header Table -->
+                <template v-slot:activator="{ on, attrs }">
+                  <v-container class="d-flex align-center">
+                    <!-- Add E-Book Button -->
+                    <v-btn color="#2995D9" dark v-bind="attrs" v-on="on">
+                      Add E-Book
+                      <v-icon right> mdi-plus </v-icon>
+                    </v-btn>
+                    <!-- End Add E-Book Button -->
+
+                    <!-- Teks Jumlah Article -->
+                    <p class="ma-auto ml-4 font-weight-bold">50 Articles</p>
+                    <!-- End Teks Jumlah Article -->
+
+                    <v-spacer></v-spacer>
+
+                    <!-- Search Article -->
+                    <v-container id="search-article">
+                      <v-text-field
+                        v-model="search"
+                        append-icon="mdi-magnify"
+                        label="Search"
+                        single-line
+                        hide-details
+                        solo
+                        flat
+                        outlined
+                        dense
+                      ></v-text-field>
+                    </v-container>
+                    <!-- End Search Article -->
+                  </v-container>
+                </template>
+                <!-- End Header Table -->
+
+                <!-- Dialog add Article -->
+                <v-card>
+                  <!-- Card Header -->
+                  <v-card-title>
+                    <v-container class="d-flex">
+                      <span class="headline">{{ formTitle }}</span>
+                      <v-spacer></v-spacer>
+                      <v-btn icon @click="close">
+                        <v-icon>mdi-close</v-icon>
+                      </v-btn>
+                    </v-container>
+                  </v-card-title>
+                  <!-- End Card Header -->
+
+                  <v-divider></v-divider>
+
+                  <!-- Main Card -->
+                  <v-card-text>
+                    <!-- Baris Choose Genre -->
+                    <v-container>
+                      <v-row>
+                        <v-col md="3" cols="12" class="d-flex">
+                          <h3 class="my-auto">Choose Genre</h3>
+                        </v-col>
+                        <v-col md="6" cols="12">
+                          <v-select
+                            :items="genre"
+                            solo
+                            flat
+                            outlined
+                            placeholder="Genre"
+                            hide-details="auto"
+                          ></v-select>
+                        </v-col>
+                        <v-col md="3" cols="12">
+                          <v-select
+                            :items="age"
+                            solo
+                            flat
+                            outlined
+                            placeholder="Year"
+                            hide-details="auto"
+                          ></v-select>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                    <!-- End Baris Choose Genre -->
+
+                    <v-divider></v-divider>
+
+                    <!-- Baris Title -->
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" md="3" class="d-flex">
+                          <h3 class="my-auto">Title</h3>
+                        </v-col>
+                        <v-col
+                          cols="12"
+                          md="6"
+                          class="d-flex justify-center align-center"
+                        >
+                          <v-text-field
+                            solo
+                            flat
+                            hide-details="auto"
+                            background-color="#FAFAFA"
+                          >
+                          </v-text-field>
+                        </v-col>
+                        <v-col md="3" cols="12">
+                          <v-select
+                            :items="age"
+                            solo
+                            flat
+                            outlined
+                            placeholder="Age"
+                            hide-details="auto"
+                          ></v-select>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                    <!-- End Baris Title -->
+
+                    <v-divider></v-divider>
+
+                    <!-- Baris Image -->
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" md="3" class="d-flex">
+                          <h3 class="my-auto">Image</h3>
+                        </v-col>
+                        <v-col
+                          cols="12"
+                          md="4"
+                          class="d-flex justify-center align-center"
+                        >
+                          <div class="grey lighten-5">
+                            <button @click="myfile" class="add">
+                              <v-icon
+                                class="primary mr-2 rounded"
+                                depressed
+                                fab
+                                dark
+                                size="x-large"
+                                >mdi-image</v-icon
+                              >
+                              <br />
+                              <h5>drag & drop file</h5>
+                              <h5>here or from a computer</h5>
+                            </button>
+                          </div>
+                        </v-col>
+
+                        <v-col
+                          cols="12"
+                          md="5"
+                          class="justify-center align-center"
+                          ><v-text-field
+                            placeholder="Author"
+                            solo
+                            flat
+                            filled
+                            background-color="#FAFAFA"
+                          ></v-text-field>
+                          <v-text-field
+                            placeholder="Publisher"
+                            solo
+                            flat
+                            single-line
+                            filled
+                            background-color="#FAFAFA"
+                          ></v-text-field>
+                          <v-text-field
+                            placeholder="Vendor"
+                            solo
+                            flat
+                            single-line
+                            filled
+                            background-color="#FAFAFA"
+                          ></v-text-field
+                        ></v-col>
+                      </v-row>
+                    </v-container>
+                    <!-- End Baris Link Youtube -->
+
+                    <v-divider></v-divider>
+
+                    <!-- Baris Description -->
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" md="3" class="d-flex">
+                          <h3 class="my-auto">ISBN</h3>
+                        </v-col>
+                        <v-col
+                          cols="12"
+                          md="9"
+                          class="d-flex justify-center align-center"
+                        >
+                          <v-text-field
+                            solo
+                            flat
+                            hide-details="auto"
+                            background-color="#FAFAFA"
+                          >
+                          </v-text-field>
+                        </v-col>
+                      </v-row>
+
+                      <v-row>
+                        <v-col cols="12" md="3" class="d-flex"> </v-col>
+                        <v-col cols="12" md="5" class="align-center">
+                          <v-radio-group v-model="row" row>
+                            <v-radio label="Free" value="radio-1"></v-radio>
+                            <v-spacer> </v-spacer>
+                            <v-radio label="Paid" value="radio-2"></v-radio>
+                          </v-radio-group>
+                        </v-col>
+                        <v-col cols="12" md="4" class="d-flex">
+                          <v-text-field
+                            class="pt-3"
+                            label="Rp"
+                            filled
+                            outlined
+                            dense
+                          ></v-text-field>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                    <!-- End Baris Description -->
+
+                    <!-- Baris Language -->
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" md="3" class="d-flex">
+                          <h3 class="my-auto">Language</h3>
+                        </v-col>
+                        <v-col
+                          cols="12"
+                          md="9"
+                          class="d-flex justify-center align-center"
+                        >
+                          <v-select
+                            :items="language"
+                            solo
+                            flat
+                            outlined
+                            hide-details="auto"
+                            background-color="#FAFAFA"
+                            placeholder="Bahasa Indonesia"
+                          >
+                          </v-select>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                    <!-- End Baris Language -->
+
+                    <v-divider></v-divider>
+
+                    <!-- Baris Description Type File -->
+                    <v-container>
+                      <v-row>
+                        <v-col cols="12" md="3" class="d-flex">
+                          <h3 class="my-auto">Synopsis</h3>
+                        </v-col>
+                        <v-col
+                          cols="12"
+                          md="9"
+                          class="d-flex justify-center align-center"
+                        >
+                          <v-textarea
+                            background-color="#FAFAFA"
+                            solo
+                            flat
+                            dense
+                            name="input-7-4"
+                          ></v-textarea>
+                        </v-col>
+                      </v-row>
+
+                      <v-row>
+                        <v-col cols="12" md="3" class="d-flex"> </v-col>
+                        <v-col cols="12" md="3" class="d-flex">
+                          <div>
+                            <v-btn
+                              color="primary"
+                              class="text-none"
+                              round
+                              depressed
+                              :loading="isSelecting"
+                              @click="onButtonClick"
+                            >
+                              <v-icon> mdi-cloud-upload </v-icon>
+                              {{ buttonText }}
+                            </v-btn>
+                            <input
+                              ref="uploader"
+                              class="d-none"
+                              type="file"
+                              accept="image/*"
+                              @change="onFileChanged"
+                            />
+                          </div>
+                        </v-col>
+                        <v-col
+                          cols="12"
+                          md="6"
+                          class="d-flex align-center pt-4"
+                        >
+                          <p>Pdf & Epub</p></v-col
+                        >
+                      </v-row>
+                    </v-container>
+                    <!-- End Baris Decription Type File -->
+
+                    <v-divider></v-divider>
+                  </v-card-text>
+                  <!-- End Main Card -->
+
+                  <!-- Footer Card -->
+                  <v-card-actions>
+                    <v-container class="d-flex">
+                      <v-btn outlined color="#2995D9" @click="close">
+                        Cancel
+                      </v-btn>
+                      <v-spacer></v-spacer>
+                      <v-btn dark id="btn-save" @click="save"> Save </v-btn>
+                    </v-container>
+                  </v-card-actions>
+                  <!-- End Footer Card -->
+                </v-card>
+                <!-- End Dialog add Article -->
+              </v-dialog>
+              <!-- End add Article -->
+
+              <!-- Dialog delete Article -->
+              <v-dialog v-model="dialogDelete" max-width="500px">
+                <v-card>
+                  <v-card-title class="headline">Delete Article</v-card-title>
+                  <v-card-text
+                    >Are you sure you want to delete this item?</v-card-text
+                  >
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" text @click="closeDelete"
+                      >Cancel</v-btn
+                    >
+                    <v-btn color="red darken-1" text @click="deleteItemConfirm"
+                      >OK</v-btn
+                    >
+                    <v-spacer></v-spacer>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+              <!-- End Dialog delete Article -->
+            </v-toolbar>
+          </template>
+
+          <!-- Isi Tabel => Article Name Column -->
+          <template v-slot:[`item.name`]="{ item }">
+            <v-container class="d-flex">
+              <v-avatar size="46px">
+                <img
+                  alt="Avatar"
+                  src="https://avatars0.githubusercontent.com/u/9064066?v=4&s=460"
+                />
+              </v-avatar>
+              <p class="my-auto ml-3">{{ item.name }}</p>
+            </v-container>
+          </template>
+          <!-- End Isi Tabel => Article Name Column -->
+
+          <!-- Isi Tabel => Publish Column -->
+          <template v-slot:[`item.publish`]="{ item }">
+            <div v-if="item.publish == false">
+              <v-btn icon id="btn-unpublish" title="Unpublish">
+                <v-icon @click="editItem(item)" class="white--text">
+                  mdi-cancel
+                </v-icon>
+              </v-btn>
+            </div>
+
+            <div v-if="item.publish == true">
+              <v-btn icon id="btn-publish" title="Publish">
+                <v-icon @click="editItem(item)" class="white--text">
+                  mdi-share
+                </v-icon>
+              </v-btn>
+            </div>
+          </template>
+          <!-- End Isi Tabel => Publish Column -->
+
+          <!-- Isi Tabel => Action Column -->
+          <template v-slot:[`item.actions`]="{ item }">
+            <v-btn
+              icon
+              class="ma-2 pa-4"
+              style="background-color: #2995d9"
+              title="Edit"
+            >
+              <v-icon @click="editItem(item)" class="white--text">
+                mdi-square-edit-outline
+              </v-icon>
+            </v-btn>
+            <v-btn
+              icon
+              class="ma-2 pa-4"
+              style="background-color: #0c5380"
+              title="Delete"
+            >
+              <v-icon @click="deleteItem(item)" class="white--text">
+                mdi-delete-forever
+              </v-icon>
+            </v-btn>
+          </template>
+          <!-- End Isi Tabel => Action Column -->
+
+          <template v-slot:no-data>
+            <v-btn color="primary" @click="initialize"> Reset </v-btn>
+          </template>
+        </v-data-table>
+      </v-container>
+    </v-content>
+  </v-app>
+</template>
+
+<script>
+export default {
+  data: () => ({
+    dialog: false,
+    dialogDelete: false,
+    search: "",
+    articles: [],
+    selected: [],
+    editedIndex: -1,
+    column: null,
+    row: null,
+    defaultButtonText: "Choose File",
+    selectedFile: null,
+    isSelecting: false,
+
+    headers: [
+      { text: "Article", align: "start", value: "name" },
+      { text: "Genre", value: "genre" },
+      { text: "Publish Date", value: "publishDate" },
+      { text: "Delete Date", value: "deleteDate" },
+      { text: "Publish", value: "publish" },
+      { text: "Actions", value: "actions" },
+    ],
+    genre: ["Education", "Business", "Fashion"],
+    age: ["All Age", "Toddler", "Adult"],
+    language: ["Bahasa Indonesia", "English"],
+    editedItem: {
+      name: "",
+      genre: 0,
+      publishDate: 0,
+      deleteDate: 0,
+    },
+    defaultItem: {
+      name: "",
+      genre: 0,
+      publishDate: 0,
+      deleteDate: 0,
+    },
+  }),
+
+  computed: {
+    formTitle() {
+      return this.editedIndex === -1 ? "Add E-Book" : "Edit E-Book";
+    },
+    buttonText() {
+      return this.selectedFile
+        ? this.selectedFile.name
+        : this.defaultButtonText;
+    },
+  },
+
+  watch: {
+    dialog(val) {
+      val || this.close();
+    },
+    dialogDelete(val) {
+      val || this.closeDelete();
+    },
+  },
+
+  created() {
+    this.initialize();
+  },
+
+  methods: {
+    myfile: function () {
+      document.getElementById("myfile").click();
+    },
+    onButtonClick() {
+      this.isSelecting = true;
+      window.addEventListener(
+        "focus",
+        () => {
+          this.isSelecting = false;
+        },
+        { once: true }
+      );
+
+      this.$refs.uploader.click();
+    },
+    onFileChanged(e) {
+      this.selectedFile = e.target.files[0];
+
+      // do something
+    },
+    initialize() {
+      this.articles = [
+        {
+          name: "Frozen Yogurt",
+          genre: "Education",
+          publishDate: "02 / 04 / 2021",
+          deleteDate: "03 / 04 / 2021",
+          publish: false,
+        },
+        {
+          name: "Ice cream sandwich",
+          genre: "Education",
+          publishDate: "02 / 04 / 2021",
+          deleteDate: "03 / 04 / 2021",
+          publish: true,
+        },
+        {
+          name: "Eclair",
+          genre: "Fashion",
+          publishDate: "02 / 04 / 2021",
+          deleteDate: "03 / 04 / 2021",
+          publish: false,
+        },
+        {
+          name: "Cupcake",
+          genre: "Business",
+          publishDate: "02 / 04 / 2021",
+          deleteDate: "03 / 04 / 2021",
+          publish: true,
+        },
+        {
+          name: "Gingerbread",
+          genre: "Fashion",
+          publishDate: "02 / 04 / 2021",
+          deleteDate: "03 / 04 / 2021",
+          publish: true,
+        },
+        {
+          name: "Jelly bean",
+          genre: "Education",
+          publishDate: "02 / 04 / 2021",
+          deleteDate: "03 / 04 / 2021",
+          publish: true,
+        },
+        {
+          name: "Lollipop",
+          genre: "Education",
+          publishDate: "02 / 04 / 2021",
+          deleteDate: "03 / 04 / 2021",
+          publish: false,
+        },
+        {
+          name: "Honeycomb",
+          genre: "Business",
+          publishDate: "02 / 04 / 2021",
+          deleteDate: "03 / 04 / 2021",
+          publish: true,
+        },
+        {
+          name: "Donut",
+          genre: "Education",
+          publishDate: "02 / 04 / 2021",
+          deleteDate: "03 / 04 / 2021",
+          publish: true,
+        },
+        {
+          name: "KitKat",
+          genre: "Education",
+          publishDate: "02 / 04 / 2021",
+          deleteDate: "03 / 04 / 2021",
+          publish: true,
+        },
+      ];
+    },
+
+    editItem(item) {
+      this.editedIndex = this.articles.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
+    },
+
+    deleteItem(item) {
+      this.editedIndex = this.articles.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
+    },
+
+    deleteItemConfirm() {
+      this.articles.splice(this.editedIndex, 1);
+      this.closeDelete();
+    },
+
+    close() {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    closeDelete() {
+      this.dialogDelete = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    },
+
+    save() {
+      if (this.editedIndex > -1) {
+        Object.assign(this.articles[this.editedIndex], this.editedItem);
+      } else {
+        this.articles.push(this.editedItem);
+      }
+      this.close();
+    },
+  },
+};
+</script>
+
+<style scoped>
+.v-btn {
+  text-transform: capitalize;
+}
+.v-data-table-header {
+  background-color: #e3f2fd;
+}
+.v-data-table-header span {
+  font-size: 18px !important;
+}
+.v-text-field--outlined >>> fieldset {
+  border-color: #e1e1e1 !important;
+}
+.v-text-field--solo >>> fieldset {
+  background-color: #fafafa !important;
+}
+
+#btn-save {
+  padding: 0 25px;
+  background: transparent
+    linear-gradient(
+      90deg,
+      var(--unnamed-color-2995d9) 0%,
+      var(--unnamed-color-83c5ee) 100%
+    )
+    0% 0% no-repeat padding-box;
+  background: transparent linear-gradient(90deg, #2995d9 0%, #83c5ee 100%) 0% 0%
+    no-repeat padding-box;
+}
+.add {
+  border: 1px solid gray;
+  color: gray;
+  background-color: #fafafa;
+  font-weight: bold;
+  padding: 93px 40px 93px 40px;
+}
+#btn-publish {
+  background: transparent linear-gradient(114deg, #ffa10a 0%, #ffd796 100%) 0%
+    0% no-repeat padding-box;
+}
+#btn-unpublish {
+  background: transparent linear-gradient(114deg, #aeb0b3 0%, #e0e1e3 100%) 0%
+    0% no-repeat padding-box;
+}
+@media screen and (min-width: 960px) {
+  #search-article {
+    width: 20% !important;
+  }
+}
+@media screen and (max-width: 959px) {
+  #search-article {
+    width: 40% !important;
+  }
+}
+</style>
