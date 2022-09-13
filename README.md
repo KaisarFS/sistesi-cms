@@ -1,4 +1,4 @@
-# pkl-exi
+# sistesi-cms-configuration
 
 ## Project setup
 ```
@@ -19,9 +19,10 @@ npm run build
 ```
 npm run lint
 ```
+
 ### Add modules
 ```
-npm node_module
+npm node_modules
 ```
 
 ### Customize configuration
