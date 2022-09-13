@@ -20,7 +20,7 @@ npm run build
 npm run lint
 ```
 
-### Add modules
+### Add module
 ```
 npm node_modules
 ```
