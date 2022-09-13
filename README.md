@@ -1,4 +1,4 @@
-# pkl-exi
+# sistesi-cms-config: kai
 
 ## Project setup
 ```
